@@ -1,0 +1,123 @@
+namespace org.example.smint
+
+/**
+  Trip status.
+ */
+enum TripStatus
+{
+  o SPAGHETTICODE
+  o DRAFT
+  o REQUESTED
+  o PERMITTED
+  o SIGNED
+  o INTRANSIT
+  o DELIVERED
+  o FAILED
+}
+
+enum HazardCode
+{
+  o TOXIC
+  o VERYTOXIC
+  o LEAGUETOXIC
+}
+
+participant Transporter identified by transporterId 
+{
+  o String transporterId
+  o String name
+  o String type
+  --> Trip[] trips optional
+}
+
+asset Cargo identified by cargoId
+{
+  o String cargoId
+  o String name
+  o String description
+  o HazardCode hazardcode
+  o Integer quantity
+  o String unit
+}
+
+
+asset Trip identified by tripId
+{
+  o String tripId
+  o String fromLocation
+  o String toLocation
+  o DateTime fromDatetime
+  o DateTime toDatetime
+  o TripStatus status optional
+  --> Transporter transporter optional
+  --> Cargo[] cargoes optional
+}
+
+asset TripCertificate identified by tripCertificateId
+{
+  o String tripCertificateId
+  o String type
+  o String signer
+  o DateTime issuedDateTime
+  --> Trip trip
+}
+
+asset CargoCertificate identified by cargoCertificateId
+{
+  o String cargoCertificateId
+  o String type
+  o String signer
+  o DateTime issuedDateTime
+  --> Cargo cargo
+}
+
+transaction SignTrip
+{
+  -->  Trip trip
+}
+
+transaction AddCargo
+{
+  --> Trip trip
+  --> Cargo cargo
+}
+
+transaction RemoveCargo
+{
+  --> Trip trip
+  --> Cargo cargo
+}
+
+
+transaction CreateTrip
+{
+  o String fromLocation
+  o String toLocation
+  o DateTime fromDatetime
+  o DateTime toDatetime
+  o String tripId
+  --> Transporter transporter
+  --> Cargo cargo optional
+}
+
+/*
+asset Commodity identified by tradingSymbol 
+{
+    o String tradingSymbol
+    o String description
+    o String mainExchange
+    o Double quantity
+    --> Trader owner
+}
+
+participant Trader identified by tradeId 
+{
+    o String tradeId
+    o String firstName
+    o String lastName
+}
+
+transaction TradeComm {
+    --> Commodity commodity
+    --> Trader newOwner
+}*/
