@@ -3,7 +3,7 @@ const namespace = 'org.example.smint';
 
 /**
  * Creates a trip.
- * @param {org.example.smint.CreateTrip} createtrip(fromLocation,toLocation,fromDatetime,toDatetime,transporter)
+ * @param {org.example.smint.CreateTrip} createtrip (fromLocation,toLocation,fromDatetime,toDatetime,transporter)
  * @transaction
  */
 async function createTrip(createtrip)
@@ -36,21 +36,27 @@ async function createTrip(createtrip)
     await tripRegistry.add(trip);
 }
 
+/**
+ * Sign trip
+ * @param {org.example.smint.SignTrip} signtrip (signtrip)
+ * @transaction
+ */
 async function signTrip(signtrip)
 {
     var trip = signtrip.trip;
+    const status = signtrip.status;
 
     //const certificateId = signtrip.certificateId;
     const tripRegistry = await getAssetRegistry(namespace + '.Trip');
 
     //var tripCertificate = factory.newResource(namespace, 'TripCertificate', certificateId);
-    trip.status = 'SIGNED'; 
+    trip.status = status;
     await tripRegistry.update(trip);
 }
 
 /**
- * Creates a trip.
- * @param {org.example.smint.AddCargo} addCargo(trip,cargo)
+ * Add Cargo
+ * @param {org.example.smint.AddCargo} addCargo (trip,cargo)
  * @transaction
  */
 async function addCargo(addcargo)
@@ -68,8 +74,8 @@ async function addCargo(addcargo)
 }
 
 /**
- * Creates a trip.
- * @param {org.example.smint.RemoveCargo} removecargo(trip, cargo)
+ * Remove Cargo
+ * @param {org.example.smint.RemoveCargo} removecargo (trip, cargo)
  * @transaction
  */
 async function removeCargo(removecargo)
@@ -79,11 +85,41 @@ async function removeCargo(removecargo)
 
 
     tripRegistry = await getAssetRegistry(namespace + '.Trip');
-    // TODO: Check empty array...
+    var b = false;
+
     for (i = 0; i < trip.cargoes.length; i++)
     {
         if (trip.cargoes[i].cargoId = cargo.Id)
+        {
             trip.cargoes.splice(i, 1);
+            b = true;
+        }
     }
-    await tripRegistry.update(trip);
+    if (b)
+        await tripRegistry.update(trip);
+}
+
+/**
+ * All cargoes.
+ * @param {org.example.smint.AllCargo} arg
+ * @transaction
+ */
+async function allCargo(arg)
+{
+    const assetRegistry = await getAssetRegistry(namespace + '.Cargo');
+    await assetRegistry.getAll();
+}
+
+/**
+ * All trips.
+ * @param {org.example.smint.AllTrips} arg
+ * @transaction
+ */
+async function allTrips(arg)
+{
+    const transporterRegistry = await getParticipantRegistry(namespace + '.Transporter');
+    const firstTransporter = transporterRegistry.get('0001');
+
+    const assetRegistry = await firstTransporter.cargoes.getAssetRegistry(namespace + '.Cargo');
+    await assetRegistry.getAll();
 }

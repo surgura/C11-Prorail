@@ -1,6 +1,6 @@
 {
   "name": "c11network",
-  "version": "0.0.6",
+  "version": "1.0.6",
   "description": "Smintje",
   "scripts": {
     "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/c11network.bna",

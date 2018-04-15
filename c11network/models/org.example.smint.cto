@@ -5,7 +5,6 @@ namespace org.example.smint
  */
 enum TripStatus
 {
-  o SPAGHETTICODE
   o DRAFT
   o REQUESTED
   o PERMITTED
@@ -18,8 +17,10 @@ enum TripStatus
 enum HazardCode
 {
   o TOXIC
+  o NONTOXIC
   o VERYTOXIC
   o LEAGUETOXIC
+  o EXPLOSIVES
 }
 
 participant Transporter identified by transporterId 
@@ -74,6 +75,7 @@ asset CargoCertificate identified by cargoCertificateId
 transaction SignTrip
 {
   -->  Trip trip
+  o TripStatus status
 }
 
 transaction AddCargo
@@ -86,6 +88,16 @@ transaction RemoveCargo
 {
   --> Trip trip
   --> Cargo cargo
+}
+
+transaction AllTrips
+{
+
+}
+
+transaction AllCargo
+{
+
 }
 
 
